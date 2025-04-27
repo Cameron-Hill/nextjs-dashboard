@@ -4,6 +4,8 @@ import { z } from "zod";
 import postgres from "postgres";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { signIn } from "@/auth";
+import { AuthError } from "next-auth";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -131,4 +133,23 @@ export async function deleteInvoice(id: string) {
   // Revalidate the cache for the invoices page and redirect the user.
   revalidatePath("/dashboard/invoices");
   redirect("/dashboard/invoices");
+}
+
+export async function authenticate(prevState: string | undefined, formData: FormData) {
+  try {
+    await signIn("credentials", formData);
+  } catch (error) {
+    const type = (error as any).type; // eslint-disable-line @typescript-eslint/no-explicit-any
+    if (error instanceof AuthError) {
+      switch (type) {
+        case "CredentialsSignin":
+          return "Invalid credentials.";
+        default:
+          console.error(error);
+          return "Something went wrong.";
+      }
+    } else {
+      throw error;
+    }
+  }
 }
