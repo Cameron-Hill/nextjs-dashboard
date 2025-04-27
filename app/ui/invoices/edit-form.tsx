@@ -5,11 +5,15 @@ import { CheckIcon, ClockIcon, CurrencyDollarIcon, UserCircleIcon } from "@heroi
 import Link from "next/link";
 import { Button } from "@/app/ui/button";
 import { updateInvoice } from "@/app/lib/actions";
+import { notFound } from "next/navigation";
 
 export default function EditInvoiceForm({ invoice, customers }: { invoice: InvoiceForm; customers: CustomerField[] }) {
-  const updatedInvoiceWithId = updateInvoice.bind(null, invoice.id);
+  if (!invoice) {
+    notFound();
+  }
+  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
   return (
-    <form action={updatedInvoiceWithId}>
+    <form action={updateInvoiceWithId}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
