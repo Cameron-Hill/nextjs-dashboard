@@ -22,7 +22,7 @@ export type State = {
     status?: string[];
   };
   message?: string;
-  payload?: any;
+  payload?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
 // Use Zod to update the expected types
@@ -60,7 +60,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
       INSERT INTO invoices (customer_id, amount, status, date)
       VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
     `;
-  } catch (error) {
+  } catch {
     // If a database error occurs, return a more specific error.
     return {
       message: "Database Error: Failed to Create Invoice.",
@@ -97,11 +97,11 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
 
   try {
     await sql`
-    UPDATE invoices
-    SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-    WHERE id = ${id}
-  `;
-  } catch (error) {
+      UPDATE invoices
+      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      WHERE id = ${id}
+    `;
+  } catch {
     return {
       message: "Database Error: Failed to Update Invoice.",
       payload: data,
@@ -115,13 +115,12 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
 }
 
 export async function deleteInvoice(id: string) {
-  throw new Error("Failed to delete");
   try {
     await sql`
-    DELETE FROM invoices
-    WHERE id = ${id}
-  `;
-  } catch (error) {
+      DELETE FROM invoices
+      WHERE id = ${id}
+    `;
+  } catch {
     return {
       message: "Database Error: Failed to Delete Invoice.",
       payload: { id },

@@ -3,7 +3,7 @@
 import { FaceFrownIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
-export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function Error() {
   return (
     <main className="flex h-full flex-col items-center justify-center gap-2">
       <FaceFrownIcon className="w-10 text-gray-400" />
